@@ -15,13 +15,15 @@ if !isdir(builddir)
 end
 
 @unix_only begin
+	oldDir = pwd()
+	cd(srcdir)
 	@build_steps begin
-		ChangeDirectory(srcdir)
 		if useIntelFortran
 			run(`ifort --O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared Ac_mul_B.f90  A_mul_B.f90 -o ../builds/ParSpMatVec`)
 		else
 			run(`gfortran -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared  Ac_mul_B.f90  A_mul_B.f90 -o ../builds/ParSpMatVec`)
 		end
 	end
+	cd(oldDir)
 end
 

@@ -2,7 +2,7 @@
 using ParSpMatVec
 using Base.Test
 
-n = 500000
+n = 50000
 nvec = 20
 A = sprand(n,n, 2.e-6);
 numProcs = 4;
@@ -16,12 +16,9 @@ alpha = 123.56
 beta = 543.21
 y2 = copy(y)
 println("y = beta*y + alpha * A*x")
-tic(); y2 = beta*y2 + alpha * A*x; toc();
-
-y3 = copy(y)
-println("Base.A_mul_B!( alpha, A, x, beta, y3)")
-tic(); Base.A_mul_B!( alpha, A, x, beta, y3); BaseTime = toq();
-@test norm(y3-y2) / norm(y) < 1.e-12
+tic(); 
+y2 = beta*y2 + alpha * A*x; 
+BaseTime = toq();
 
 for k=1:numProcs
 	y3 = copy(y)
@@ -58,12 +55,9 @@ beta  = complex(543.21, 111.222)
 
 y2 = copy(y)
 println("y = beta*y + alpha * A*x")
-tic(); y2 = beta*y2 + alpha * A*x; toc();
-
-y3 = copy(y)
-println("Base.A_mul_B!( alpha, A, x, beta, y3)")
-tic(); Base.A_mul_B!( alpha, A, x, beta, y3); BaseTime = toq();
-@test norm(y3-y2) / norm(y) < 1.e-12
+tic(); 
+y2 = beta*y2 + alpha * A*x
+BaseTime = toq()
 
 for k=1:numProcs
 	y3 = copy(y)
