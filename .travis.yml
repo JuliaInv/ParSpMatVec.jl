@@ -14,7 +14,6 @@ notifications:
   email: false
  
 before_install:
-   - julia -e 'Pkg.clone("https://github.com/lruthotto/ParSpMatVec.jl");'
    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
   - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("ParSpMatVec"); Pkg.test("ParSpMatVec"; coverage=true)'
