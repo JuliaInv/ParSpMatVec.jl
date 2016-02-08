@@ -6,11 +6,20 @@ using BinDeps
 useIntelFortran = false
 
 # construct absolute path
-depsdir = splitdir(Base.source_path())[1]
+depsdir  = splitdir(Base.source_path())[1]
 builddir = joinpath(depsdir,"builds")
-srcdir  = joinpath(depsdir,"src")
+srcdir   = joinpath(depsdir,"src")
+
+println("=== Building ParSpMatVec ===")
+println("depsdir  = $depsdir")
+println("builddir = $builddir")
+println("srcdir   = $srcdir")
+println("useIntel = $useIntelFortran")
+
+
 
 if !isdir(builddir)
+	println("creating build directory")
 	mkdir(builddir)
 end
 
@@ -26,4 +35,5 @@ end
 	end
 	cd(oldDir)
 end
+
 

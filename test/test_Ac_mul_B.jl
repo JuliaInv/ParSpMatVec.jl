@@ -3,6 +3,7 @@ using ParSpMatVec
 using Base.Test
 
 n = 50000
+numProcs =4;
 nvec = 5
 A = sprand(n,n, 2.e-6);
 
@@ -19,7 +20,7 @@ tic();
 y2 = beta*y2 + alpha * A'*x; 
 BaseTime = toq();
 
-for k=1:numProcs
+for k=0:numProcs
 	y3 = copy(y)
 	println("ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3,",k,")")
 	tic(); ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, k ); PSMVtime = toq();
@@ -28,7 +29,66 @@ for k=1:numProcs
 end
 println()
 
+# test error handling for nthreads
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, 0);
+catch E
+	@test isa(E,ArgumentError)
+end
 
+# test error handling for sizes
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 0);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 0);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+
+println("Complex Scalars, Real matrix")
+
+alpha = 123.56 + 1im*randn()
+beta = 543.21 + 1im*randn()
+y = rand(n,nvec) + 1im* rand(n,nvec)
+x  = rand(n,nvec) + 1im* rand(n,nvec)
+println("y = beta*y + alpha * A'*x")
+tic(); 
+y2 = beta*y + alpha * A'*x; 
+BaseTime = toq();
+
+for k=0:numProcs
+	y3 = copy(y)
+	println("ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3,",k,")")
+	tic(); ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, k ); PSMVtime = toq();
+	@printf "Base=%1.4f\t ParSpMatVec=%1.4f\t speedup=%1.4f\n" BaseTime PSMVtime BaseTime/PSMVtime 
+	@test norm(y3-y2) / norm(y) < 1.e-12
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, 0);
+catch E
+	@test isa(E,ArgumentError)
+end
+# test error handling for sizes
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 0);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 0);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+println()
 #-----------------------------------
 # Complex
 
@@ -58,11 +118,30 @@ tic();
 y2 = beta*y2 + alpha * A'*x; 
 BaseTime = toq();
 
-for k=1:numProcs
+for k=0:numProcs
 	y3 = copy(y)
 	println("ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3,",k,")")
 	tic(); ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, k ); PSMVtime = toq();
 	@printf "Base=%1.4f\t ParSpMatVec=%1.4f\t speedup=%1.4f\n" BaseTime PSMVtime BaseTime/PSMVtime 
 	@test norm(y3-y2) / norm(y) < 1.e-12
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, 0);
+catch E
+	@test isa(E,ArgumentError)
+end
+# test error handling for sizes
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 0);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 0);
+catch E
+	@test isa(E,DimensionMismatch)
 end
 println()

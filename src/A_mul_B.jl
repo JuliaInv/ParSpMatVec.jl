@@ -13,17 +13,16 @@ function A_mul_B!( alpha::Float64,
       Base.A_mul_B!( alpha, A, x, beta, y )
       return
    elseif nthreads < 1
-      error("nthreads < 1")
+      throw(ArgumentError("nthreads < 1"))
    end
 
-	n  = size(A,1)
-	m  = size(A,2)
-   nvec = size(x,2)
+	n,m = size(A)
+    nvec = size(x,2)
 
    if size(x,1) != m || size(y,1) != n 
-      error("length(x) != m || length(y) != n")
+      throw(DimensionMismatch("length(x) != m || length(y) != n"))
    elseif size(y,2) != nvec
-      error("length(y,2) != nvec")
+      throw(DimensionMismatch("length(y,2) != nvec"))
    end
    
    
@@ -44,20 +43,19 @@ function A_mul_B!( alpha::Complex128,
 # Real, Complex A:  y = beta*y  +  alpha * A*x 
 
    if nthreads == 0
-      Base.A_mul_B!( alpha, A, x, beta, y )
+      Base.A_mul_B!( alpha, complex(A), x, beta, y )
       return
    elseif nthreads < 1
-      error("nthreads < 1")
+      throw(ArgumentError("nthreads < 1"))
    end
 
-	n  = size(A,1)
-	m  = size(A,2)
+	n,m  = size(A)
    nvec = size(x,2)
 
    if size(x,1) != m || size(y,1) != n 
-      error("length(x) != m || length(y) != n")
+      throw(DimensionMismatch("length(x) != m || length(y) != n"))
    elseif size(y,2) != nvec
-      error("length(y,2) != nvec")
+      throw(DimensionMismatch("length(y,2) != nvec"))
    end
    
 	p  = ccall( (:a_mul_b_rc_, spmatveclib),
@@ -80,17 +78,16 @@ function A_mul_B!( alpha::Complex128,
       Base.A_mul_B!( alpha, A, x, beta, y )
       return
    elseif nthreads < 1
-      error("nthreads < 1")
+      throw(ArgumentError("nthreads < 1"))
    end
 
-	n  = size(A,1)
-	m  = size(A,2)
+	n,m  = size(A)
    nvec = size(x,2)
 
    if size(x,1) != m || size(y,1) != n 
-      error("length(x) != m || length(y) != n")
+      throw(DimensionMismatch("length(x) != m || length(y) != n"))
    elseif size(y,2) != nvec
-      error("length(y,2) != nvec")
+      throw(DimensionMismatch("length(y,2) != nvec"))
    end
    
 	p  = ccall( (:a_mul_b_cc_, spmatveclib),
