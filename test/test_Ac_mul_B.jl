@@ -32,7 +32,7 @@ println()
 # test error handling for nthreads
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, -1);
 catch E
 	@test isa(E,ArgumentError)
 end
@@ -40,13 +40,13 @@ end
 # test error handling for sizes
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 1);
 catch E
 	@test isa(E,DimensionMismatch)
 end
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 1);
 catch E
 	@test isa(E,DimensionMismatch)
 end
@@ -71,20 +71,20 @@ for k=0:numProcs
 end
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, -1);
 catch E
 	@test isa(E,ArgumentError)
 end
 # test error handling for sizes
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 1);
 catch E
 	@test isa(E,DimensionMismatch)
 end
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 1);
 catch E
 	@test isa(E,DimensionMismatch)
 end
@@ -127,20 +127,20 @@ for k=0:numProcs
 end
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, -1);
 catch E
 	@test isa(E,ArgumentError)
 end
 # test error handling for sizes
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 1);
 catch E
 	@test isa(E,DimensionMismatch)
 end
 try 
 	y3 = copy(y)
-	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 0);
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 1);
 catch E
 	@test isa(E,DimensionMismatch)
 end
