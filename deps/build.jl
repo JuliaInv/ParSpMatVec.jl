@@ -24,16 +24,16 @@ if !isdir(builddir)
 end
 
 @unix_only begin
-	oldDir = pwd()
-	cd(srcdir)
+	src1 = joinpath(srcdir,"A_mul_B.f90")
+	src2 = joinpath(srcdir,"Ac_mul_B.f90")
+	outfile = joinpath(builddir,"ParSpMatVec")
 	@build_steps begin
 		if useIntelFortran
-			run(`ifort --O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared Ac_mul_B.f90  A_mul_B.f90 -o ../builds/ParSpMatVec`)
+			run(`ifort --O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared  $src1 $src2 -o $outfile`)
 		else
-			run(`gfortran -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared  Ac_mul_B.f90  A_mul_B.f90 -o ../builds/ParSpMatVec`)
+			run(`gfortran -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared  $src1 $src2 -o $outfile`)
 		end
 	end
-	cd(oldDir)
 end
 
 
