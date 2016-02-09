@@ -71,7 +71,7 @@ end
 
 try 
 	y3 = copy(y)
-	ParSpMatVec.A_mul_B!( alpha, A, x, beta, y3, 0)
+	ParSpMatVec.A_mul_B!( alpha, A, x, beta, y3, -1)
 catch E
 	@test isa(E,ArgumentError)
 end

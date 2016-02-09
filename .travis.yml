@@ -2,6 +2,7 @@ language: julia
 
 os:
   - osx
+  - linux
 
 julia:
   - 0.4
@@ -11,6 +12,10 @@ julia:
 notifications:
   email: false
  
+addons:
+  apt_packages:
+      - gfortran
+
 before_install:
    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
