@@ -42,4 +42,17 @@ end
 	end
 end
 
+@windows_only begin 
+	src1 = joinpath(srcdir,"A_mul_B.f90")
+	src2 = joinpath(srcdir,"Ac_mul_B.f90")
+	outfile = joinpath(builddir,"ParSpMatVec.dll")
+	@build_steps begin
+		println("fortran version")
+		run(`gfortran --version`)
+		run(`gfortran -O3 -cpp -fopenmp -fdefault-integer-8 -shared -DBUILD_DLL  $src1 $src2 -o $outfile`)
+
+	end
+end
+
+
 
