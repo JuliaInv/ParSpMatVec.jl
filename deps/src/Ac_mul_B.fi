@@ -1,69 +1,36 @@
 
+
 ! y = beta*y  +  alpha * A'*x
 
+integer bi, L, rowBatchSize
 
-if (alpha == 0.d0) then
-   y = beta * y
-   return
-end if
-   
-   
-if ( nvec >= nthreads ) then
+rowBatchSize = 1536
 
-   !$OMP parallel do default(none), num_threads(nthreads),  &
-   !$OMP&         private(ivec, i,t, j1,j2, j),  &
-   !$OMP&         shared(nvec, n,A,jA,iA, x,y, alpha, beta)
-
-   do ivec = 1, nvec
-
-      do i = 1, n
-
-         t = 0.d0
-         j1 = iA(i)
-         j2 = iA(i+1) - 1
-
-         do  j = j1, j2
+	if (alpha == 0.d0) then
+	y = beta * y
+		return
+	end if
+	
+	!$OMP parallel do default(none), num_threads(nthreads),  &
+	!$OMP&         private(ivec,i,t, j1,j2, j,bi,L),  &
+    !$OMP&         shared(rowBatchSize,n,A,jA,iA, x,y, alpha, beta,nvec)
+	do bi = 1, n, rowBatchSize
+		L = min(bi+rowBatchSize-1,n)
+		do ivec = 1, nvec
+			do i = bi,L
+				j1 = iA(i)
+				j2 = iA(i+1) - 1
+				t = 0.d0
+				do  j = j1, j2
 #ifdef CMPLXA         
-            t = t + conjg(A(j)) * x(jA(j),ivec)
+					t = t + conjg(A(j)) * x(jA(j),ivec)
 #else
-            t = t + A(j) * x(jA(j),ivec)
+					t = t + A(j) * x(jA(j),ivec)
 #endif   
-         end do
-
-         y(i,ivec) = beta*y(i,ivec) + alpha*t
-      end do  ! i
-
-   end do  ! ivec
-
-   !$OMP end parallel do
-
-
-else
-
-   do ivec = 1, nvec
-
-      !$OMP parallel do default(none), num_threads(nthreads),  &
-      !$OMP&         private(i,t, j1,j2, j),  &
-      !$OMP&         shared(ivec, n,A,jA,iA, x,y, alpha, beta)
-      do i = 1, n
-
-         t = 0.d0
-         j1 = iA(i)
-         j2 = iA(i+1) - 1
-
-         do  j = j1, j2
-#ifdef CMPLXA         
-            t = t + conjg(A(j)) * x(jA(j),ivec)
-#else
-            t = t + A(j) * x(jA(j),ivec)
-#endif   
-         end do
-
-         y(i,ivec) = beta*y(i,ivec) + alpha*t
-      end do  ! i
-      !$OMP end parallel do
-
-   end do  ! ivec
-
-end if
+				end do
+				y(i,ivec) = beta*y(i,ivec) + alpha*t
+			end do !i
+		end do  ! ivec
+	end do ! bi
+    !$OMP end parallel do
    
