@@ -13,7 +13,7 @@ install:
 build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
   - IF EXIST .git\shallow (git fetch --unshallow)
-  - C:\projects\julia\bin\julia -e "versioninfo(); Pkg.init(); Pkg.add("ParSpMatVec"); Pkg.build("ParSpMatVec")"
+  - C:\projects\julia\bin\julia -e "versioninfo(); Pkg.init(); Pkg.add(\"ParSpMatVec\"); Pkg.build(\"ParSpMatVec\")"
 
 test_script:
   - C:\projects\julia\bin\julia -e "Pkg.test(\"ParSpMatVec\")"
