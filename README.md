@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/lruthotto/ParSpMatVec.jl.svg?branch=master)](https://travis-ci.org/lruthotto/ParSpMatVec.jl)
 [![Coverage Status](https://coveralls.io/repos/github/lruthotto/ParSpMatVec.jl/badge.svg?branch=master)](https://coveralls.io/github/lruthotto/ParSpMatVec.jl?branch=master)
 # ParSpMatVec.jl
-Shared-memory implementation of parallel sparse matrix vector product in Julia
+Shared-memory implementation of parallel sparse matrix vector product in Julia. We thank Roman Shekhtman (UBC) for providing the Fortran code. 
 
 ## Installation
 To install on a unix machine, follow these steps
