@@ -1,5 +1,9 @@
-[![Build Status](https://travis-ci.org/lruthotto/ParSpMatVec.jl.svg?branch=master)](https://travis-ci.org/lruthotto/ParSpMatVec.jl)
-[![Coverage Status](https://coveralls.io/repos/github/lruthotto/ParSpMatVec.jl/badge.svg?branch=master)](https://coveralls.io/github/lruthotto/ParSpMatVec.jl?branch=master)
+[![Build Status](https://travis-ci.org/JuliaInv/ParSpMatVec.jl.svg?branch=master)](https://travis-ci.org/JuliaInv/ParSpMatVec.jl)
+[![Coverage Status](https://coveralls.io/repos/github/JuliaInv/ParSpMatVec.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaInv/ParSpMatVec.jl?branch=master)
+[![Build status](https://ci.appveyor.com/api/projects/status/rhce77smh99fag93?svg=true)](https://ci.appveyor.com/project/lruthotto/parspmatvec-jl-fmwu5)
+
+
+
 # ParSpMatVec.jl
 Shared-memory implementation of parallel sparse matrix vector product in Julia. We thank Roman Shekhtman (UBC) for providing the Fortran code. 
 
