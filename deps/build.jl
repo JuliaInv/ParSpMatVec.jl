@@ -26,7 +26,7 @@ if !isdir(builddir)
 	end
 end
 
-@unix_only begin
+@static if is_unix()
 	
 	src1 = joinpath(srcdir,"A_mul_B.f90")
 	src2 = joinpath(srcdir,"Ac_mul_B.f90")
@@ -42,7 +42,7 @@ end
 	end
 end
 
-@windows_only begin 
+@static if is_windows() 
 	src1 = joinpath(srcdir,"A_mul_B.f90")
 	src2 = joinpath(srcdir,"Ac_mul_B.f90")
 	outfile = joinpath(builddir,"ParSpMatVec.dll")
