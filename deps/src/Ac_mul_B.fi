@@ -4,8 +4,12 @@
 
 integer bi, L, rowBatchSize
 
-rowBatchSize = 1536
 
+#ifdef CMPLXA         
+	rowBatchSize = 1024
+#else
+	rowBatchSize = 2048
+#endif
 	if (alpha == 0.d0) then
 	y = beta * y
 		return
@@ -23,9 +27,9 @@ rowBatchSize = 1536
 				t = 0.d0
 				do  j = j1, j2
 #ifdef CMPLXA         
-					t = t + conjg(A(j)) * x(jA(j),ivec)
+					t = t + DCMPLX(conjg(A(j))) * x(jA(j),ivec)
 #else
-					t = t + A(j) * x(jA(j),ivec)
+					t = t + DBLE(A(j)) * x(jA(j),ivec)
 #endif   
 				end do
 				y(i,ivec) = beta*y(i,ivec) + alpha*t

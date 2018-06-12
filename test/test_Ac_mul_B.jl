@@ -145,3 +145,111 @@ catch E
 	@test isa(E,DimensionMismatch)
 end
 println()
+
+
+println("Complex short")
+alpha = convert(Complex64, alpha)
+beta  = convert(Complex64,beta);
+A = convert(SparseMatrixCSC{Complex64,Int64},A);
+x = convert(Array{Complex64},x);
+y = convert(Array{Complex64},y);
+
+y2 = copy(y)
+println("y = beta*y + alpha * A'*x")
+tic(); 
+y2 = beta*y2 + alpha * A'*x; 
+BaseTime = toq();
+
+for k=0:numProcs
+	y3 = copy(y)
+	println("ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3,",k,")")
+	tic(); ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, k ); PSMVtime = toq();
+	@printf "Base=%1.4f\t ParSpMatVec=%1.4f\t speedup=%1.4f\n" BaseTime PSMVtime BaseTime/PSMVtime 
+	@test norm(y3-y2) / norm(y) < 1.e-5
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, -1);
+catch E
+	@test isa(E,ArgumentError)
+end
+# test error handling for sizes
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 1);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 1);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+println()
+
+println("Complex short with a real matrix")
+alpha = convert(Complex64, alpha)
+beta  = convert(Complex64,beta);
+A = convert(SparseMatrixCSC{Float32,Int64},real(A));
+x = convert(Array{Complex64},x);
+y = convert(Array{Complex64},y);
+
+y2 = copy(y)
+println("y = beta*y + alpha * A'*x")
+tic(); 
+y2 = beta*y2 + alpha * A'*x; 
+BaseTime = toq();
+
+for k=0:numProcs
+	y3 = copy(y)
+	println("ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3,",k,")")
+	tic(); ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, k ); PSMVtime = toq();
+	@printf "Base=%1.4f\t ParSpMatVec=%1.4f\t speedup=%1.4f\n" BaseTime PSMVtime BaseTime/PSMVtime 
+	@test norm(y3-y2) / norm(y) < 1.e-5
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, -1);
+catch E
+	@test isa(E,ArgumentError)
+end
+# test error handling for sizes
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x[1:10,:], beta, y3, 1);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+try 
+	y3 = copy(y)
+	ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3[:,2], 1);
+catch E
+	@test isa(E,DimensionMismatch)
+end
+
+println()
+println("Complex single with a complex matrix but double target and source")
+alpha = convert(Complex128, alpha)
+beta  = convert(Complex128,beta);
+A = convert(SparseMatrixCSC{Complex64,Int64},real(A) + 1im*A);
+x = convert(Array{Complex128},x);
+y = convert(Array{Complex128},y);
+
+y2 = copy(y)
+println("y = beta*y + alpha * A'*x")
+tic(); 
+y2 = beta*y2 + alpha * A'*x; 
+BaseTime = toq();
+
+for k=0:numProcs
+	y3 = copy(y)
+	println("ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3,",k,")")
+	tic(); ParSpMatVec.Ac_mul_B!( alpha, A, x, beta, y3, k ); PSMVtime = toq();
+	@printf "Base=%1.4f\t ParSpMatVec=%1.4f\t speedup=%1.4f\n" BaseTime PSMVtime BaseTime/PSMVtime 
+	@test norm(y3-y2) / norm(y) < 1.e-5
+	 norm(y3-y2) / norm(y) 
+end
+println()
+
+
