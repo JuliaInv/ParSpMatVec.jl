@@ -4,7 +4,7 @@ os:
   - linux
 
 julia:
-  - release
+  - 0.7
   
 notifications:
   email: false
@@ -16,7 +16,9 @@ addons:
 before_install:
    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
-  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("ParSpMatVec"); Pkg.test("ParSpMatVec"; coverage=true)'
-
+  - julia --check-bounds=yes -e 'using Pkg;' 
+  # Pkg.add(PackageSpec(url="https://github.com/openjuliainv/ParSpMatVec.jl")); Pkg.build("ParSpMatVec"); Pkg.test("ParSpMatVec"; coverage=true)'
+  - julia --color=yes -e 'using Pkg; Pkg.build();'
 after_success:
-  - julia -e 'cd(Pkg.dir("ParSpMatVec")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia --check-bounds=yes --color=yes -e 'using Pkg; Pkg.test(coverage=true);'
+  #- julia -e 'using Pkg; cd(Pkg.dir("ParSpMatVec")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'

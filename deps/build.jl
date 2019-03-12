@@ -1,6 +1,3 @@
-using BinDeps
-
-@BinDeps.setup
 
 # set to true to support intel fortran compiler
 useIntelFortran = false
@@ -26,32 +23,26 @@ if !isdir(builddir)
 	end
 end
 
-@static if is_unix()
+@static if Sys.isunix()
 	
 	src1 = joinpath(srcdir,"A_mul_B.f90")
 	src2 = joinpath(srcdir,"Ac_mul_B.f90")
 	outfile = joinpath(builddir,"ParSpMatVec")
-	@build_steps begin
-		if useIntelFortran
-			run(`ifort -O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared  $src1 $src2 -o $outfile`)
-		else
-			println("fortran version")
-			run(`gfortran --version`)
-			run(`gfortran -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared  $src1 $src2 -o $outfile`)
-		end
+	if useIntelFortran
+		run(`ifort -O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared  $src1 $src2 -o $outfile`)
+	else
+		println("fortran version")
+		run(`gfortran --version`)
+		run(`gfortran -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared  $src1 $src2 -o $outfile`)
 	end
 end
 
-@static if is_windows() 
+@static if Sys.iswindows() 
 	src1 = joinpath(srcdir,"A_mul_B.f90")
 	src2 = joinpath(srcdir,"Ac_mul_B.f90")
 	outfile = joinpath(builddir,"ParSpMatVec.dll")
-	@build_steps begin
-		println("fortran version")
-		run(`gfortran --version`)
-		run(`gfortran -O3 -cpp -fopenmp -fdefault-integer-8 -shared -DBUILD_DLL  $src1 $src2 -o $outfile`)
-
-	end
+	run(`gfortran --version`)
+	run(`gfortran -O3 -cpp -fopenmp -fdefault-integer-8 -shared -DBUILD_DLL  $src1 $src2 -o $outfile`)
 end
 
 

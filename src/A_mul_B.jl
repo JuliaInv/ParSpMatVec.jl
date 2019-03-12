@@ -10,7 +10,8 @@ function A_mul_B!( alpha::Float64,
 # Real:  y = beta*y  +  alpha * A*x 
 
    if nthreads == 0
-      Base.A_mul_B!( alpha, A, x, beta, y )
+      #Base.A_mul_B!( alpha, A, x, beta, y )
+	  mul!(y,A,x, alpha, beta)
       return
    elseif nthreads < 1
       throw(ArgumentError("nthreads < 1"))
@@ -28,22 +29,22 @@ function A_mul_B!( alpha::Float64,
    
 	p  = ccall( (:a_mul_b_rr_, spmatveclib),
 		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Int64}, Ptr{Int64}, Ptr{Float64}, Ptr{Float64}),
-                &nthreads, &nvec, &m, &n,    &alpha,   &beta,              A.nzval,      A.rowval,   A.colptr,   x,   y);
+                Ref(nthreads), Ref(nvec), Ref(m), Ref(n),    Ref(alpha),   Ref(beta),              A.nzval,      A.rowval,   A.colptr,   x,   y);
    
 end  # function A_mul_B!
 
 #------------------------------------------------------------------------------
 
-function A_mul_B!( alpha::Complex128,
+function A_mul_B!( alpha::ComplexF64,
                    A::SparseMatrixCSC{Float64,Int},
-                   x::Array{Complex128},
-                   beta::Complex128,
-                   y::Array{Complex128},
+                   x::Array{ComplexF64},
+                   beta::ComplexF64,
+                   y::Array{ComplexF64},
                    nthreads::Int64=0 )
 # Real, Complex A:  y = beta*y  +  alpha * A*x 
 
    if nthreads == 0
-      Base.A_mul_B!( alpha, complex(A), x, beta, y )
+      mul!(y,A,x, alpha, beta) # Base.A_mul_B!( alpha, complex(A), x, beta, y )
       return
    elseif nthreads < 1
       throw(ArgumentError("nthreads < 1"))
@@ -59,23 +60,23 @@ function A_mul_B!( alpha::Complex128,
    end
    
 	p  = ccall( (:a_mul_b_rc_, spmatveclib),
-		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Complex128}, Ptr{Complex128}, Ptr{Float64}, Ptr{Int64}, Ptr{Int64}, Ptr{Complex128}, Ptr{Complex128}),
-                   &nthreads, &nvec, &m, &n,     &alpha,   &beta,              A.nzval,      A.rowval,   A.colptr,   convert(Ptr{Complex128}, pointer(x)),  convert(Ptr{Complex128}, pointer(y)));
+		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}, Ptr{Float64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}),
+                   Ref(nthreads), Ref(nvec), Ref(m), Ref(n),     Ref(alpha),   Ref(beta),              A.nzval,      A.rowval,   A.colptr,   convert(Ptr{ComplexF64}, pointer(x)),  convert(Ptr{ComplexF64}, pointer(y)));
    
 end  # function A_mul_B!
 
 #------------------------------------------------------------------------------
 
-function A_mul_B!( alpha::Complex128,
-                   A::SparseMatrixCSC{Complex128,Int},
-                   x::Array{Complex128},
-                   beta::Complex128,
-                   y::Array{Complex128},
+function A_mul_B!( alpha::ComplexF64,
+                   A::SparseMatrixCSC{ComplexF64,Int},
+                   x::Array{ComplexF64},
+                   beta::ComplexF64,
+                   y::Array{ComplexF64},
                    nthreads::Int64=0 )
 # Complex A:  y = beta*y  +  alpha * A*x 
 
    if nthreads == 0
-      Base.A_mul_B!( alpha, A, x, beta, y )
+      mul!(y,A,x, alpha, beta) # Base.A_mul_B!( alpha, A, x, beta, y )
       return
    elseif nthreads < 1
       throw(ArgumentError("nthreads < 1"))
@@ -91,7 +92,7 @@ function A_mul_B!( alpha::Complex128,
    end
    
 	p  = ccall( (:a_mul_b_cc_, spmatveclib),
-		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Complex128}, Ptr{Complex128}, Ptr{Complex128}, Ptr{Int64}, Ptr{Int64}, Ptr{Complex128}, Ptr{Complex128}),
-                   &nthreads, &nvec, &m, &n,     &alpha,   &beta,              convert(Ptr{Complex128}, pointer(A.nzval)),      A.rowval,   A.colptr,   convert(Ptr{Complex128}, pointer(x)),  convert(Ptr{Complex128}, pointer(y)));
+		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}, Ptr{ComplexF64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}),
+                   Ref(nthreads), Ref(nvec), Ref(m), Ref(n),     Ref(alpha),   Ref(beta),              convert(Ptr{ComplexF64}, pointer(A.nzval)),      A.rowval,   A.colptr,   convert(Ptr{ComplexF64}, pointer(x)),  convert(Ptr{ComplexF64}, pointer(y)));
    
 end  # function A_mul_B!
