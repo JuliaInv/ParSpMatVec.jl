@@ -2,6 +2,7 @@
 # set to true to support intel fortran compiler
 
 try 
+	println("************************Trying to build ParSpMatVec ******************************")
 	useIntelFortran = false
 
 	# construct absolute path
