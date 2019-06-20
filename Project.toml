@@ -1,5 +1,5 @@
 name = "ParSpMatVec"
-uuid = "46e045f0-2ea7-11e9-2e29-a9e59055879a"
+uuid = "ccf9b6e2-7ea7-596a-9d65-09863b18e8cc"
 authors = ["Eran Treister <erantreister@gmail.com>"]
 version = "0.1.0"
 
