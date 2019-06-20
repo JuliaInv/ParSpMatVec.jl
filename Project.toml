@@ -3,6 +3,9 @@ uuid = "ccf9b6e2-7ea7-596a-9d65-09863b18e8cc"
 authors = ["Eran Treister <erantreister@gmail.com>"]
 version = "0.1.0"
 
+[compat]
+julia = "1"
+
 [deps]
 BinDeps = "9e28174c-4ba2-5203-b857-d8d62c4213ee"
 Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
