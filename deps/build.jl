@@ -36,6 +36,7 @@ try
 			run(`ifort -O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared  $src1 $src2 -o $outfile`)
 		else
 			println("fortran version")
+			println(dumpfile)
 			run(`gfortran --version`)
 			run(`gfortran -v -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared  $src1 $src2 -o $outfile > $dumpfile`)
 		end
