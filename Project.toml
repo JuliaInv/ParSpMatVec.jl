@@ -1,16 +1,15 @@
 name = "ParSpMatVec"
 uuid = "ccf9b6e2-7ea7-596a-9d65-09863b18e8cc"
 authors = ["Eran Treister <erantreister@gmail.com>"]
-version = "0.1.0"
-
-[compat]
-julia = "1"
-
+version = "0.1.1"
 
 [deps]
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[compat]
+julia = "1"
 
 [extras]
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
