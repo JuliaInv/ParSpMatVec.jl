@@ -1,7 +1,7 @@
 
 # set to true to support intel fortran compiler
 
-#try 
+try 
 	println("************************Trying to build ParSpMatVec ******************************")
 	useIntelFortran = false
 
@@ -36,7 +36,7 @@
 			run(`ifort -O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared  $src1 $src2 -o $outfile`)
 		else
 			println("fortran version")
-			run(`gfortran --version`)
+			# run(`gfortran --version`)
 			run(`gfortran -v -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared $src1 $src2 -o $outfile`)
 			println("Done compiling.")
 		end
@@ -49,9 +49,9 @@
 		run(`gfortran --version`)
 		run(`gfortran -v -O3 -cpp -fopenmp -fdefault-integer-8 -shared -DBUILD_DLL  $src1 $src2 -o $outfile`)
 	end
-#catch
-#	@warn "Unable to build ParSpMatVec"
-#end
+catch
+	@warn "Warning: Unable to build ParSpMatVec"
+end
 
 
 
