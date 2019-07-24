@@ -11,7 +11,7 @@ include("Ac_mul_B.jl")
 
 export isBuilt
 function isBuilt()
-	#println(spmatveclib)
+	println(spmatveclib)
 	return find_library([spmatveclib])!=""
 end
 
