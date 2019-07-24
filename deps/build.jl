@@ -31,14 +31,13 @@ try
 		src1 = joinpath(srcdir,"A_mul_B.f90")
 		src2 = joinpath(srcdir,"Ac_mul_B.f90")
 		outfile = joinpath(builddir,"ParSpMatVec.so")
-		dumpfile = joinpath(builddir,"compileOut.txt")
+		
 		if useIntelFortran
 			run(`ifort -O3 -xHost -fPIC -fpp -openmp -integer-size 64 -diag-disable=7841 -shared  $src1 $src2 -o $outfile`)
 		else
 			println("fortran version")
-			println(dumpfile)
 			run(`gfortran --version`)
-			run(`gfortran -v -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared  $src1 $src2 -o $outfile > $dumpfile`)
+			run(`gfortran -v -O3 -fPIC -cpp -fopenmp -fdefault-integer-8 -shared $src1 $src2 -o $outfile`)
 		end
 	end
 
@@ -47,7 +46,7 @@ try
 		src2 = joinpath(srcdir,"Ac_mul_B.f90")
 		outfile = joinpath(builddir,"ParSpMatVec.dll")
 		run(`gfortran --version`)
-		run(`gfortran -O3 -cpp -fopenmp -fdefault-integer-8 -shared -DBUILD_DLL  $src1 $src2 -o $outfile`)
+		run(`gfortran -v -O3 -cpp -fopenmp -fdefault-integer-8 -shared -DBUILD_DLL  $src1 $src2 -o $outfile`)
 	end
 catch
 	@warn "Unable to build ParSpMatVec"
