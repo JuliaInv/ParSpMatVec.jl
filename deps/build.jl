@@ -48,7 +48,7 @@ try
 		run(`gfortran -O3 -cpp -fopenmp -fdefault-integer-8 -shared -DBUILD_DLL  $src1 $src2 -o $outfile`)
 	end
 catch
-	println("Unable to build ParSpMatVec")
+	@warn "Unable to build ParSpMatVec"
 end
 
 
