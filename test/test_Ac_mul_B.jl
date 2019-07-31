@@ -1,4 +1,5 @@
-
+@testset "Ac_mul_B" begin
+for Ti in [Int32, Int64]
 using ParSpMatVec
 using Test
 using SparseArrays
@@ -9,6 +10,7 @@ n = 50000
 numProcs =4;
 nvec = 5
 A = sprand(n,n, 2.e-6);
+A = convert(SparseMatrixCSC{eltype(A),Ti}, A)
 
 x = rand(n,nvec);  x = x*10 .- 5;
 y = rand(n,nvec);  y = y*10 .- 5;
@@ -99,6 +101,7 @@ ii,jj,vv = findnz(A)
 ai = ones(length(ii));
 vv = vv + im*ai
 A = sparse(ii,jj, vv, n,n)
+A = convert(SparseMatrixCSC{eltype(A),Ti}, A)
 ii=0; jj=0; vv=0; ai=0;
 
 xi = rand(n,nvec);  xi = xi*10 .- 5;
@@ -150,7 +153,7 @@ println()
 println("Complex short")
 alpha = convert(ComplexF32, alpha)
 beta  = convert(ComplexF32,beta);
-A = convert(SparseMatrixCSC{ComplexF32,Int64},A);
+A = convert(SparseMatrixCSC{ComplexF32,Ti},A);
 x = convert(Array{ComplexF32},x);
 y = convert(Array{ComplexF32},y);
 
@@ -190,7 +193,7 @@ println()
 println("Complex short with a real matrix")
 alpha = convert(ComplexF32, alpha)
 beta  = convert(ComplexF32,beta);
-A = convert(SparseMatrixCSC{Float32,Int64},real(A));
+A = convert(SparseMatrixCSC{Float32,Ti},real(A));
 x = convert(Array{ComplexF32},x);
 y = convert(Array{ComplexF32},y);
 
@@ -231,7 +234,7 @@ println()
 println("Complex single with a complex matrix but double target and source")
 alpha = convert(ComplexF64, alpha)
 beta  = convert(ComplexF64,beta);
-A = convert(SparseMatrixCSC{ComplexF32,Int64},real(A) + 1im*A);
+A = convert(SparseMatrixCSC{ComplexF32,Ti},real(A) + 1im*A);
 x = convert(Array{ComplexF64},x);
 y = convert(Array{ComplexF64},y);
 
@@ -251,4 +254,5 @@ for k=0:numProcs
 end
 println()
 
-
+end # End Ti loop
+end # End testset

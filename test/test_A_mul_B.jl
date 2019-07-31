@@ -1,4 +1,5 @@
-
+@testset "A_mul_B" begin
+for Ti in [Int32, Int64]
 using ParSpMatVec
 using Test
 using SparseArrays
@@ -7,6 +8,7 @@ using LinearAlgebra
 n = 50000
 nvec = 20
 A = sprand(n,n, 2.e-6);
+A = convert(SparseMatrixCSC{eltype(A),Ti}, A)
 numProcs = 4;
 
 x = rand(n,nvec);  x = x*10 .- 5;
@@ -100,6 +102,7 @@ ii,jj,vv = findnz(A)
 ai = ones(length(ii));
 vv = vv + im*ai
 A = sparse(ii,jj, vv, n,n)
+A = convert(SparseMatrixCSC{eltype(A),Ti}, A)
 ii=0; jj=0; vv=0; ai=0;
 
 xi = rand(n,nvec);  xi = xi*10 .- 5;
@@ -148,3 +151,6 @@ catch E
 	@test isa(E,DimensionMismatch)
 end
 println()
+
+end # Ti loop
+end # testset

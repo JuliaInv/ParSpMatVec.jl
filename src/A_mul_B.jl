@@ -2,11 +2,11 @@
 export A_mul_B!
 
 function A_mul_B!( alpha::Float64,
-                   A::SparseMatrixCSC{Float64,Int},
+                   A::SparseMatrixCSC{Float64,Ti},
                    x::Array{Float64},
                    beta::Float64,
                    y::Array{Float64},
-                   nthreads::Int64=0 )
+                   nthreads::Int64=0 ) where Ti
 # Real:  y = beta*y  +  alpha * A*x 
 
    if nthreads == 0
@@ -27,20 +27,28 @@ function A_mul_B!( alpha::Float64,
    end
    
    
-	p  = ccall( (:a_mul_b_rr_, spmatveclib),
-		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Int64}, Ptr{Int64}, Ptr{Float64}, Ptr{Float64}),
-                Ref(nthreads), Ref(nvec), Ref(m), Ref(n),    Ref(alpha),   Ref(beta),              A.nzval,      A.rowval,   A.colptr,   x,   y);
-   
+	if Ti == Int32
+      p = ccall( (:a_mul_b_rr_32_, spmatveclib),
+		       Nothing, ( Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Int32}, Ref{Int32}, Ref{Float64}, Ref{Float64}),
+             nthreads, nvec, m, n,    alpha,   beta,              A.nzval,      A.rowval,   A.colptr,   x,   y)
+   elseif Ti == Int64
+      p = ccall( (:a_mul_b_rr_64_, spmatveclib),
+		       Nothing, ( Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Int64}, Ref{Int64}, Ref{Float64}, Ref{Float64}),
+             nthreads, nvec, m, n,    alpha,   beta,              A.nzval,      A.rowval,   A.colptr,   x,   y) 
+   else
+      error("Unsupported sparse matrix indexing integer type $Ti")
+   end
+   return p
 end  # function A_mul_B!
 
 #------------------------------------------------------------------------------
 
 function A_mul_B!( alpha::ComplexF64,
-                   A::SparseMatrixCSC{Float64,Int},
+                   A::SparseMatrixCSC{Float64,Ti},
                    x::Array{ComplexF64},
                    beta::ComplexF64,
                    y::Array{ComplexF64},
-                   nthreads::Int64=0 )
+                   nthreads::Int64=0 ) where Ti
 # Real, Complex A:  y = beta*y  +  alpha * A*x 
 
    if nthreads == 0
@@ -59,20 +67,28 @@ function A_mul_B!( alpha::ComplexF64,
       throw(DimensionMismatch("length(y,2) != nvec"))
    end
    
-	p  = ccall( (:a_mul_b_rc_, spmatveclib),
-		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}, Ptr{Float64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}),
-                   Ref(nthreads), Ref(nvec), Ref(m), Ref(n),     Ref(alpha),   Ref(beta),              A.nzval,      A.rowval,   A.colptr,   convert(Ptr{ComplexF64}, pointer(x)),  convert(Ptr{ComplexF64}, pointer(y)));
-   
+	if Ti == Int32
+	   p = ccall( (:a_mul_b_rc_32_, spmatveclib),
+		 Nothing, ( Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{ComplexF64}, Ref{ComplexF64}, Ref{Float64}, Ref{Int32}, Ref{Int32}, Ref{ComplexF64}, Ref{ComplexF64}),
+                   nthreads, nvec, m, n,     alpha,   beta,              A.nzval,      A.rowval,   A.colptr,   x,  y)
+   elseif Ti == Int64
+      p = ccall( (:a_mul_b_rc_64_, spmatveclib),
+		 Nothing, ( Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{ComplexF64}, Ref{ComplexF64}, Ref{Float64}, Ref{Int64}, Ref{Int64}, Ref{ComplexF64}, Ref{ComplexF64}),
+                   nthreads, nvec, m, n,     alpha,   beta,              A.nzval,      A.rowval,   A.colptr,   x,  y)
+   else
+      error("Unsupported sparse matrix indexing integer type $Ti")
+   end
+   return p
 end  # function A_mul_B!
 
 #------------------------------------------------------------------------------
 
 function A_mul_B!( alpha::ComplexF64,
-                   A::SparseMatrixCSC{ComplexF64,Int},
+                   A::SparseMatrixCSC{ComplexF64,Ti},
                    x::Array{ComplexF64},
                    beta::ComplexF64,
                    y::Array{ComplexF64},
-                   nthreads::Int64=0 )
+                   nthreads::Int64=0 ) where Ti
 # Complex A:  y = beta*y  +  alpha * A*x 
 
    if nthreads == 0
@@ -91,8 +107,16 @@ function A_mul_B!( alpha::ComplexF64,
       throw(DimensionMismatch("length(y,2) != nvec"))
    end
    
-	p  = ccall( (:a_mul_b_cc_, spmatveclib),
-		 Int64, ( Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}, Ptr{ComplexF64}, Ptr{Int64}, Ptr{Int64}, Ptr{ComplexF64}, Ptr{ComplexF64}),
-                   Ref(nthreads), Ref(nvec), Ref(m), Ref(n),     Ref(alpha),   Ref(beta),              convert(Ptr{ComplexF64}, pointer(A.nzval)),      A.rowval,   A.colptr,   convert(Ptr{ComplexF64}, pointer(x)),  convert(Ptr{ComplexF64}, pointer(y)));
-   
+	if Ti == Int32
+	   p = ccall( (:a_mul_b_cc_32_, spmatveclib),
+		   Nothing, ( Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{ComplexF64}, Ref{ComplexF64}, Ref{ComplexF64}, Ref{Int32}, Ref{Int32}, Ref{ComplexF64}, Ref{ComplexF64}),
+                   nthreads, nvec, m, n,     alpha,   beta,            A.nzval,      A.rowval,   A.colptr,  x,  y)
+   elseif Ti == Int64
+      p = ccall( (:a_mul_b_cc_64_, spmatveclib),
+		 Nothing, ( Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{Int64}, Ref{ComplexF64}, Ref{ComplexF64}, Ref{ComplexF64}, Ref{Int64}, Ref{Int64}, Ref{ComplexF64}, Ref{ComplexF64}),
+                   nthreads, nvec, m, n,     alpha,   beta,            A.nzval,      A.rowval,   A.colptr,  x,  y)
+   else
+      error("Unsupported sparse matrix indexing integer type $Ti")
+   end
+   return p
 end  # function A_mul_B!
